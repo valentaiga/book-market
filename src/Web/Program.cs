@@ -1,7 +1,6 @@
 using System.Data;
 using Application.Behaviors;
 using Domain.Abstractions;
-using FluentMigrator.Runner;
 using FluentValidation;
 using Infrastructure;
 using Infrastructure.Repositories;
@@ -45,29 +44,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // todo: structure all this mess
-if (args.Contains("-migrate"))
-{
-#pragma warning disable ASP0000
-    await using var serviceProvider = new ServiceCollection()
-        .AddFluentMigratorCore()
-        .ConfigureRunner(rb =>
-            rb.AddPostgres()
-                .WithGlobalConnectionString(builder.Configuration.GetConnectionString("PostgresDb"))
-                .ScanIn(applicationAssembly).For.Migrations())
-        .AddLogging(b => b.AddFluentMigratorConsole())
-        .BuildServiceProvider();
-#pragma warning restore ASP0000
-    
-    var migrationRunner = serviceProvider.GetRequiredService<IMigrationRunner>();
-    
-    if (args.Contains("down"))
-        migrationRunner.MigrateDown(0);
-    else
-        migrationRunner.MigrateUp();
-
-    return;
-}
-
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlerMiddleware>();
@@ -78,10 +54,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.MapControllers();
 
 await app.RunAsync();

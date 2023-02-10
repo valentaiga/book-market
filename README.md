@@ -21,6 +21,7 @@ Purpose: Develop a WebAPI book e-shop
   - [x] Context based exceptions
   - [x] Enrich log with trace identifier
   - [ ] Sink to ES/Grafana ?
+  - [ ] Move setting to configuration file
 - [ ] **Mapster**
 - [x] **Unit of work pattern**
 - [ ] **Outbox pattern**

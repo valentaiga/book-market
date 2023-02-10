@@ -4,11 +4,11 @@ using Domain.Abstractions;
 
 namespace Application.Books.Queries.GetAllBooks;
 
-public class GetAllBooksHandler : IQueryHandler<GetAllBooksQuery, BooksResponse>
+public class GetAllBooksQueryHandler : IQueryHandler<GetAllBooksQuery, BooksResponse>
 {
     private readonly IBookRepository _bookRepository;
 
-    public GetAllBooksHandler(IBookRepository bookRepository)
+    public GetAllBooksQueryHandler(IBookRepository bookRepository)
     {
         _bookRepository = bookRepository;
     }

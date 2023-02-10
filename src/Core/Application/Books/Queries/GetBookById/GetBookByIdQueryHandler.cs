@@ -4,11 +4,11 @@ using Domain.Exceptions;
 
 namespace Application.Books.Queries.GetBookById;
 
-public class GetBookByIdHandler : IQueryHandler<GetBookByIdQuery, BookResponse>
+public class GetBookByIdQueryHandler : IQueryHandler<GetBookByIdQuery, BookResponse>
 {
     private readonly IBookRepository _bookRepository;
 
-    public GetBookByIdHandler(IBookRepository bookRepository)
+    public GetBookByIdQueryHandler(IBookRepository bookRepository)
     {
         _bookRepository = bookRepository;
     }
