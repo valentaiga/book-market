@@ -1,3 +1,4 @@
+using Application.Abstractions;
 using Application.Books.Commands.CreateBook;
 using Application.Books.Queries.GetAllBooks;
 using Application.Books.Queries.GetBookById;
@@ -14,10 +15,13 @@ namespace Presentation.ApiControllers;
 [Route("v1/books")]
 public class BooksController : ApiControllerBase
 {
+    private readonly IMapper _mapper;
+
     /// <inheritdoc />
-    public BooksController(IMediator mediator)
+    public BooksController(IMediator mediator, IMapper mapper)
         : base(mediator)
     {
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -31,9 +35,7 @@ public class BooksController : ApiControllerBase
     public async Task<IActionResult> GetById(Guid bookId, CancellationToken ct)
     {
         var query = new GetBookByIdQuery(bookId);
-
         var book = await Mediator.Send(query, ct);
-
         return Ok(book);
     }
 
@@ -60,16 +62,8 @@ public class BooksController : ApiControllerBase
     [ProducesResponseType(typeof(Result<Guid>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Create(CreateBookRequest request)
     {
-        // var command = request.Adapt<CreateBookCommand>();
-        var command = new CreateBookCommand(
-            request.Title,
-            request.Description,
-            request.PublishDate,
-            request.PagesCount,
-            request.Language,
-            request.AuthorId);
+        var command = _mapper.Map<CreateBookRequest, CreateBookCommand>(request);
         var result = await Mediator.Send(command);
-
         return Ok(result);
     }
 }

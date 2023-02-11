@@ -14,7 +14,7 @@ Purpose: Develop a WebAPI book e-shop
   - [x] Layers
 - [x] **Dapper**
 - [x] **FluentMigration**
-- [x] **FluentValidation**
+- [ ] **FluentValidation**
 - [ ] **k8s deploy**
 - [x] **Swagger**
 - [x] **Serilog**
@@ -22,7 +22,7 @@ Purpose: Develop a WebAPI book e-shop
   - [x] Enrich log with trace identifier
   - [ ] Sink to ES/Grafana ?
   - [ ] Move setting to configuration file
-- [ ] **Mapster**
+- [x] **Mapster**
 - [x] **Unit of work pattern**
 - [ ] **Outbox pattern**
 - [ ] **Authentication**
@@ -31,7 +31,7 @@ Purpose: Develop a WebAPI book e-shop
 - Postgres setup/Change connection string
     - local postgres in docker by command `docker run --name postgres-db -e POSTGRES_PASSWORD=admin -p 5432:5432 -d postgres`
 - Restore nugets
-- Build project
-- Run migration UP (args: `-migrate up`)
+- Build `Migrator` project
+- Run migrator up (args: `-up`)
 - Run Web project
 - Swagger is on `/swagger` endpoint

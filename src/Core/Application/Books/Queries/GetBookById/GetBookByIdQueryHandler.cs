@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Application.Books.Responses;
 using Domain.Abstractions;
+using Domain.Entities;
 using Domain.Exceptions;
 
 namespace Application.Books.Queries.GetBookById;
@@ -8,10 +9,12 @@ namespace Application.Books.Queries.GetBookById;
 public class GetBookByIdQueryHandler : IQueryHandler<GetBookByIdQuery, BookResponse>
 {
     private readonly IBookRepository _bookRepository;
+    private readonly IMapper _mapper;
 
-    public GetBookByIdQueryHandler(IBookRepository bookRepository)
+    public GetBookByIdQueryHandler(IBookRepository bookRepository, IMapper mapper)
     {
         _bookRepository = bookRepository;
+        _mapper = mapper;
     }
 
     public async Task<BookResponse> Handle(GetBookByIdQuery request, CancellationToken ct)
@@ -21,11 +24,6 @@ public class GetBookByIdQueryHandler : IQueryHandler<GetBookByIdQuery, BookRespo
         if (book is null)
             throw new BookNotFoundException(request.BookId);
 
-        //var resp = book.Adapt<BookResponse>();
-        var resp = new BookResponse
-        {
-            Id = book.Id
-        };
-        return resp;
+        return _mapper.Map<Book, BookResponse>(book);
     } 
 }
