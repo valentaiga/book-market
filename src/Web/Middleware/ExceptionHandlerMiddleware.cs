@@ -43,6 +43,12 @@ public class ExceptionHandlerMiddleware
                 await WriteResponse(context, error, StatusCodes.Status400BadRequest);
                 break;
             }
+            case BadRequestException ex:
+            {
+                var error = Failure(ex.Message, traceId);
+                await WriteResponse(context, error, StatusCodes.Status400BadRequest);
+                break;
+            }
             case InternalErrorException ex:
             {
                 var error = Failure("Internal Service Error", traceId);

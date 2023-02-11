@@ -1,6 +1,7 @@
 using Application.Books.Commands.CreateBook;
 using Application.Books.Queries.GetAllBooks;
 using Application.Books.Queries.GetBookById;
+using Application.Books.Responses;
 using Domain.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

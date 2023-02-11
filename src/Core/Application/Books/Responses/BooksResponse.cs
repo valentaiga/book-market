@@ -1,6 +1,4 @@
-using Application.Books.Queries.GetBookById;
-
-namespace Application.Books.Queries.GetAllBooks;
+namespace Application.Books.Responses;
 
 public sealed class BooksResponse
 {

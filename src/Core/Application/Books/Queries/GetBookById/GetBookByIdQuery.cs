@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Application.Books.Responses;
 
 namespace Application.Books.Queries.GetBookById;
 
