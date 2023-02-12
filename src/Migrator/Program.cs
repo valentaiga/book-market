@@ -2,26 +2,36 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-var stage = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
-            ?? "Development";
+namespace Migrator;
 
-var configuration = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .AddJsonFile($"appsettings.{stage}.json")
-    .Build();
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var stage = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+                    ?? "Development";
 
-using var serviceProvider = new ServiceCollection()
-    .AddFluentMigratorCore()
-    .ConfigureRunner(rb =>
-        rb.AddPostgres()
-            .WithGlobalConnectionString(configuration.GetConnectionString("PostgresDb"))
-            .ScanIn(typeof(Program).Assembly).For.Migrations())
-    .AddLogging(b => b.AddFluentMigratorConsole())
-    .BuildServiceProvider();
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .AddJsonFile($"appsettings.{stage}.json")
+            .Build();
 
-var migrationRunner = serviceProvider.GetRequiredService<IMigrationRunner>();
+        using var serviceProvider = new ServiceCollection()
+            .AddFluentMigratorCore()
+            .ConfigureRunner(rb =>
+                rb.AddPostgres()
+                    .WithGlobalConnectionString(configuration.GetConnectionString("PostgresDb"))
+                    .ScanIn(typeof(Program).Assembly).For.Migrations())
+            .AddLogging(b => b.AddFluentMigratorConsole())
+            .BuildServiceProvider();
 
-if (args.Contains("-down"))
-    migrationRunner.MigrateDown(0);
-else if (args.Contains("-up"))
-    migrationRunner.MigrateUp();
+        var migrationRunner = serviceProvider.GetRequiredService<IMigrationRunner>();
+
+        if (args.Contains("-down"))
+            migrationRunner.MigrateDown(0);
+
+        // no 'else' in case if database should be recreated
+        if (args.Contains("-up"))
+            migrationRunner.MigrateUp();
+    }
+}

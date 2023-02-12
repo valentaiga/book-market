@@ -5,10 +5,10 @@ public class Result
     public Error? Error { get; }
     public bool IsError => Error is not null;
 
-    private Result(Error error)
+    public Result(Error error)
         => Error = error;
 
-    protected Result()
+    public Result()
     {
     }
 

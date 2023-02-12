@@ -2,7 +2,7 @@ using Web.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.ConfigureLogger();
+builder.Logging.ConfigureLogger();
 
 builder.Services.ConfigureMediatR();
 builder.Services.ConfigureMapper();
@@ -12,13 +12,8 @@ builder.Services.ConfigureControllers();
 
 var app = builder.Build();
 
+app.AddSwagger();
 app.AddMiddleware();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 app.UseHttpsRedirection();
 app.UseRouting();

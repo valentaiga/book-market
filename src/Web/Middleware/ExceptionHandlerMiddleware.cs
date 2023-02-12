@@ -51,6 +51,7 @@ public class ExceptionHandlerMiddleware
             }
             case InternalErrorException ex:
             {
+                _logger.LogError(ex.InternalException, ex.Message);
                 var error = Failure("Internal Service Error", traceId);
                 await WriteResponse(context, error, StatusCodes.Status500InternalServerError);
                 break;
@@ -68,7 +69,7 @@ public class ExceptionHandlerMiddleware
     private static async Task WriteResponse(HttpContext context, Result error, int statusCode)
     {
         context.Response.StatusCode = statusCode;
-        var bytes = JsonSerializer.SerializeToUtf8Bytes(error);
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(error, new JsonSerializerOptions(JsonSerializerDefaults.Web));
         await context.Response.BodyWriter.WriteAsync(bytes);
     }
 }

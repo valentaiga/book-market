@@ -12,7 +12,7 @@ namespace Presentation.ApiControllers;
 /// <summary>
 /// Books web api
 /// </summary>
-[Route("v1/books")]
+[Route("api/books")]
 public class BooksController : ApiControllerBase
 {
     private readonly IMapper _mapper;
@@ -60,7 +60,7 @@ public class BooksController : ApiControllerBase
     /// <returns>Book Id</returns>
     [HttpPost]
     [ProducesResponseType(typeof(Result<Guid>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Create(CreateBookRequest request)
+    public async Task<IActionResult> Create([FromBody] CreateBookRequest request)
     {
         var command = _mapper.Map<CreateBookRequest, CreateBookCommand>(request);
         var result = await Mediator.Send(command);

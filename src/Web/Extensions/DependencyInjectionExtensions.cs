@@ -63,11 +63,12 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IBookRepository, BookRepository>();
     }
 
-    public static void ConfigureLogger(this WebApplicationBuilder builder)
+    public static void ConfigureLogger(this ILoggingBuilder builder)
     {
-        Log.Logger = new LoggerConfiguration()
+        var config = new LoggerConfiguration()
             .Enrich.WithTraceIdentifier()
-            .WriteTo.Console()
-            .CreateLogger();
+            .WriteTo.Console();
+
+        Log.Logger = config.CreateLogger();
     }
 }

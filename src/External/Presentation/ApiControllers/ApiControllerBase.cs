@@ -13,7 +13,6 @@ namespace Presentation.ApiControllers;
 [ProducesResponseType(typeof(ErrorDetailed<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
 [ProducesResponseType(typeof(Error), StatusCodes.Status500InternalServerError)]
 [ProducesResponseType(typeof(Error), StatusCodes.Status503ServiceUnavailable)]
-[Route("api")]
 public abstract class ApiControllerBase : ControllerBase
 {
     /// <inheritdoc cref="IMediator" />
