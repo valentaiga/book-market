@@ -66,7 +66,7 @@ public class ExceptionHandlerMiddleware
         }
     }
 
-    private static async Task WriteResponse(HttpContext context, Result error, int statusCode)
+    private static async Task WriteResponse<TResult>(HttpContext context, TResult error, int statusCode)
     {
         context.Response.StatusCode = statusCode;
         var bytes = JsonSerializer.SerializeToUtf8Bytes(error, new JsonSerializerOptions(JsonSerializerDefaults.Web));

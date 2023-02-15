@@ -62,10 +62,10 @@ public class BooksExceptionsTests : IDisposable
     {
         var query = new CreateBookCommand(
             DatabaseNotAvailableTitle,
-            string.Empty,
+            "desc",
             DateTime.Today,
-            1,
-            string.Empty,
+            12,
+            "en",
             _existingAuthorId);
         await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(query));
     }

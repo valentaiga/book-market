@@ -1,4 +1,5 @@
 using System.Net;
+using Application.Books;
 using Application.Books.Commands.CreateBook;
 using Application.Books.Responses;
 using BookMarket.Tests.Extensions;
@@ -18,17 +19,55 @@ public class BooksApiTests : IDisposable
     }
 
     [Fact]
-    public async Task GetBook_BookNotExists_400BadRequest()
+    public async Task GetBook_BookNotExists_ReturnsError()
     {
         var bookId = Guid.NewGuid();
         var req = ApiRequestBuilder.Book.Get(bookId);
         var resp = await _factory.SendRequestAsync(req);
         Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode);
 
-        var result = await resp.DeserializeAsync<Result>();
+        var result = await resp.DeserializeAsync<Result<Error>>();
         Assert.True(result.IsError);
-        Assert.NotNull(result.Error?.Message);
-        Assert.NotNull(result.Error?.TraceId);
+        Assert.NotNull(result.Data);
+        Assert.NotNull(result.Data.Message);
+        Assert.NotNull(result.Data.TraceId);
+    }
+    
+    [Theory]
+    [InlineData(null, "desc", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.TitleInvalid)]
+    [InlineData(Util.SymbolsCount61, "desc", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.TitleInvalid)]
+    [InlineData("title", "", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.DescriptionInvalid)]
+    [InlineData("title", Util.SymbolsCount513, "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.DescriptionInvalid)]
+    [InlineData("title", "desc", "0001-01-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.PublishDateInvalid)]
+    [InlineData("title", "desc", "2022-02-01", 0, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.PagesCountInvalid)]
+    [InlineData("title", "desc", "2022-02-01", 321, "", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.LanguageInvalid)]
+    [InlineData("title", "desc", "2022-02-01", 321, Util.SymbolsCount21, "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.LanguageInvalid)]
+    [InlineData("title", "desc", "2022-02-01", 321, "en", "00000000-0000-0000-0000-000000000000", BookValidationErrors.AuthorIdInvalid)]
+    public async Task CreateBook_ValidationFailure_ReturnsErrorCode(string title, string description, string pDate, short pages, string lang, string author, string validationError)
+    {
+        DateTime.TryParse(pDate, out var publishDate);
+        Guid.TryParse(author, out var authorId);
+
+        var c = new CreateBookRequest(
+            title,
+            description,
+            publishDate,
+            pages,
+            lang,
+            authorId);
+        var req = ApiRequestBuilder.Book.Create(c);
+        var resp = await _factory.SendRequestAsync(req);
+        Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode);
+
+        var str = await resp.Content.ReadAsStringAsync();
+        var result = await resp.DeserializeAsync<Result<ErrorDetailed<Dictionary<string, string[]>>>>();
+        Assert.NotNull(result);
+        Assert.True(result.IsError);
+        Assert.NotNull(result.Data);
+        Assert.NotNull(result.Data.Details);
+        Assert.NotNull(result.Data.Message);
+        Assert.NotNull(result.Data.TraceId);
+        Assert.All(result.Data.Details.Values, errorCodes => Assert.Contains(validationError, errorCodes));
     }
 
     [Fact]

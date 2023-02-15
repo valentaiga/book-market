@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BookMarket.Tests;
 
-public static class Util
+internal static class Util
 {
-    internal static WebApplicationFactory<Program> BuildTestServer(Action<IServiceCollection> testServicesConfiguration)
+    public static WebApplicationFactory<Program> BuildTestServer(Action<IServiceCollection> testServicesConfiguration)
     {
         if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")))
             Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Testing");
@@ -17,4 +17,8 @@ public static class Util
             .UseTestServer());
         return webHost;
     }
+    
+    public const string SymbolsCount21 = "123456789012345678901";
+    public const string SymbolsCount61 = "1234567890123456789012345678901234567890123456789012345678901";
+    public const string SymbolsCount513 = "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123";
 }

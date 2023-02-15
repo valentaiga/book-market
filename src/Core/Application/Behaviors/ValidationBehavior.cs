@@ -29,7 +29,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
             .Where(x => x is not null)
             .GroupBy(
                 x => x.PropertyName,
-                x => x.ErrorMessage,
+                x => x.ErrorCode,
                 (propName, errors) => new
                 {
                     Key = propName,

@@ -1,7 +1,6 @@
 using Application.Books.Commands.CreateBook;
 using Xunit;
 using FluentValidation.TestHelper;
-using static System.Guid;
 
 namespace BookMarket.Tests.UnitTests;
 
@@ -15,10 +14,13 @@ public class ValidationTests
     [Theory]
     [InlineData("title", "desc", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", true)]
     [InlineData(null, "desc", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", false)]
+    [InlineData(Util.SymbolsCount61, "desc", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", false)]
     [InlineData("title", "", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", false)]
+    [InlineData("title", Util.SymbolsCount513, "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", false)]
     [InlineData("title", "desc", "0001-01-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", false)]
     [InlineData("title", "desc", "2022-02-01", 0, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", false)]
     [InlineData("title", "desc", "2022-02-01", 321, "", "3fa85f64-5717-4562-b3fc-2c963f66afa6", false)]
+    [InlineData("title", "desc", "2022-02-01", 321, Util.SymbolsCount21, "3fa85f64-5717-4562-b3fc-2c963f66afa6", false)]
     [InlineData("title", "desc", "2022-02-01", 321, "en", "00000000-0000-0000-0000-000000000000", false)]
     public void CreateBookCommand(string title, string description, string pDate, short pages, string lang, string author, bool expectedResult)
     {
