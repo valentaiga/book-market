@@ -2,7 +2,7 @@ namespace Domain.Shared;
 
 public class Result
 {
-    public Error? Error { get; }
+    public Error? Error { get; init; }
     public bool IsError => Error is not null;
 
     public Result(Error error)
