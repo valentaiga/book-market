@@ -2,9 +2,9 @@ using Domain.Primitives;
 
 namespace Domain.Entities;
 
-public class Book : Entity
+public class BookDto : Entity
 {
-    public Book()
+    public BookDto()
     {
         Title = null;
         Description = null;

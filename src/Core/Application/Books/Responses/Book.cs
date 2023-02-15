@@ -1,6 +1,6 @@
 namespace Application.Books.Responses;
 
-public sealed class BookResponse
+public sealed class Book
 {
     public Guid Id { get; set; }
     public string? Title { get; init; }

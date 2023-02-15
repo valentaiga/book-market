@@ -1,6 +1,6 @@
 namespace Application.Books.Commands.CreateBook;
 
-public record CreateBookRequest(
+public sealed record CreateBookRequest(
     string Title,
     string Description,
     DateTime PublishDate,

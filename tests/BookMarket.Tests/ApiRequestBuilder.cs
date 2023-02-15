@@ -13,6 +13,8 @@ public static class ApiRequestBuilder
         public static HttpRequestMessage GetAll() => new (HttpMethod.Get, $"{Prefix}");
         public static HttpRequestMessage Create(CreateBookRequest req) 
             => new HttpRequestMessage(HttpMethod.Post, $"{Prefix}").With(req);
+        public static HttpRequestMessage Delete(Guid bookId) 
+            => new HttpRequestMessage(HttpMethod.Delete, $"{Prefix}/{bookId}");
     }
 
     private static HttpRequestMessage With<TContent>(this HttpRequestMessage req, TContent data)

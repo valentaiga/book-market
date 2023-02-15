@@ -50,7 +50,7 @@ public class MapperTests : IDisposable
             "en",
             Guid.NewGuid());
 
-        var b = _mapper.Map<CreateBookCommand, Book>(c);
+        var b = _mapper.Map<CreateBookCommand, BookDto>(c);
         Assert.Equal(c.Title, b.Title);
         Assert.Equal(c.Description, b.Description);
         Assert.Equal(c.PublishDate, b.PublishDate);
@@ -62,7 +62,7 @@ public class MapperTests : IDisposable
     [Fact]
     public void BookEntity_To_GetBookResponse()
     {
-        var b = new Book
+        var b = new BookDto
         {
             Id = Guid.NewGuid(),
             Title = "title",
@@ -73,7 +73,7 @@ public class MapperTests : IDisposable
             AuthorId = Guid.NewGuid()
         };
 
-        var r = _mapper.Map<Book, BookResponse>(b);
+        var r = _mapper.Map<BookDto, Book>(b);
         Assert.Equal(b.Id, r.Id);
         Assert.Equal(b.Title, r.Title);
         Assert.Equal(b.Description, r.Description);

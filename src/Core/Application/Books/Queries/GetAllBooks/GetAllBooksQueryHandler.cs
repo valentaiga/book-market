@@ -21,7 +21,7 @@ public class GetAllBooksQueryHandler : IQueryHandler<GetAllBooksQuery, BooksResp
         var books = await _bookRepository.GetAll(ct);
 
         var booksResp = books
-            .Select(x => _mapper.Map<Book, BookResponse>(x))
+            .Select(x => _mapper.Map<BookDto, Book>(x))
             .ToArray();
 
         return new BooksResponse{ Books = booksResp};

@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Domain.Exceptions.Architecture;
 using Domain.Exceptions.Base;
-using Domain.Shared;
 using static Domain.Shared.Result;
 
 namespace Web.Middleware;

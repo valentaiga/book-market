@@ -6,7 +6,7 @@ using Domain.Exceptions;
 
 namespace Application.Books.Queries.GetBookById;
 
-public class GetBookByIdQueryHandler : IQueryHandler<GetBookByIdQuery, BookResponse>
+public class GetBookByIdQueryHandler : IQueryHandler<GetBookByIdQuery, Book>
 {
     private readonly IBookRepository _bookRepository;
     private readonly IMapper _mapper;
@@ -17,13 +17,13 @@ public class GetBookByIdQueryHandler : IQueryHandler<GetBookByIdQuery, BookRespo
         _mapper = mapper;
     }
 
-    public async Task<BookResponse> Handle(GetBookByIdQuery request, CancellationToken ct)
+    public async Task<Book> Handle(GetBookByIdQuery request, CancellationToken ct)
     {
         var book = await _bookRepository.GetById(request.BookId, ct);
         
         if (book is null)
             throw new BookNotFoundException(request.BookId);
 
-        return _mapper.Map<Book, BookResponse>(book);
+        return _mapper.Map<BookDto, Book>(book);
     } 
 }

@@ -24,7 +24,7 @@ internal sealed class CreateBookCommandHandler : ICommandHandler<CreateBookComma
 
     public async Task<Result<Guid>> Handle(CreateBookCommand request, CancellationToken ct)
     {
-        Book book = _mapper.Map<CreateBookCommand, Book>(request);
+        var book = _mapper.Map<CreateBookCommand, BookDto>(request);
 
         var bookId = await _bookRepository.Insert(book);
         _unitOfWork.Commit();

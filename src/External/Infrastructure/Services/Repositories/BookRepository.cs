@@ -1,10 +1,11 @@
 using System.Data;
+using System.Data.Common;
 using Dapper;
 using Domain.Abstractions;
 using Domain.Entities;
 using Domain.Exceptions.Architecture;
 
-namespace Infrastructure.Repositories;
+namespace Infrastructure.Services.Repositories;
 
 public class BookRepository : IBookRepository
 {
@@ -17,38 +18,38 @@ public class BookRepository : IBookRepository
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Book> GetById(Guid bookId, CancellationToken ct)
+    public async Task<BookDto> GetById(Guid bookId, CancellationToken ct)
     {
         const string query = @"SELECT * FROM books WHERE ID = @BookId LIMIT 1";
         
         try
         {
             var command = new CommandDefinition(query, new { bookId }, cancellationToken: ct);
-            return await _dbConnection.QueryFirstOrDefaultAsync<Book>(command);
+            return await _dbConnection.QueryFirstOrDefaultAsync<BookDto>(command);
         }
-        catch (Exception ex)
+        catch (DbException ex)
         {
             throw new DatabaseException($"Get book by id:'{bookId}' failed", ex);
         }
     }
 
-    public async Task<Book[]> GetAll(CancellationToken ct)
+    public async Task<BookDto[]> GetAll(CancellationToken ct)
     {
         const string query = @"SELECT * FROM books";
         
         try
         {
             var command = new CommandDefinition(query, cancellationToken: ct);
-            var result = await _dbConnection.QueryAsync<Book>(command);
+            var result = await _dbConnection.QueryAsync<BookDto>(command);
             return result.ToArray();
         }
-        catch (Exception ex)
+        catch (DbException ex)
         {
             throw new DatabaseException($"Get all books query failed", ex);
         }
     }
 
-    public async Task<Guid> Insert(Book book)
+    public async Task<Guid> Insert(BookDto book)
     {
         var query = @"INSERT INTO books
 (title, description, publish_date, pages_count, author_id, language)
@@ -68,9 +69,25 @@ RETURNING id;";
                 transaction: _unitOfWork.Transaction); 
             return await _dbConnection.ExecuteScalarAsync<Guid>(command);
         }
-        catch (Exception ex)
+        catch (DbException ex)
         {
             throw new DatabaseException($"Insert book title:'{book.Title}' failed", ex);
+        }
+    }
+
+    public async Task<bool> Delete(Guid bookId)
+    {
+        const string query = @"DELETE FROM books WHERE id = @BookId";
+        
+        try
+        {
+            var command = new CommandDefinition(query, new { bookId }, transaction: _unitOfWork.Transaction);
+            var result = await _dbConnection.ExecuteAsync(command);
+            return result == 1;
+        }
+        catch (DbException ex)
+        {
+            throw new DatabaseException($"Book delete by id:'{bookId}' failed", ex);
         }
     }
 
@@ -82,7 +99,7 @@ RETURNING id;";
             var command = new CommandDefinition(query, new { title, authorId }, cancellationToken: ct);
             return await _dbConnection.ExecuteScalarAsync<bool>(command);
         }
-        catch (Exception ex)
+        catch (DbException ex)
         {
             throw new DatabaseException($"Book existence check title:'{title}' failed", ex);
         }

@@ -3,8 +3,11 @@ using Application.Books;
 using Application.Books.Commands.CreateBook;
 using Application.Books.Responses;
 using BookMarket.Tests.Extensions;
+using Domain.Abstractions;
+using Domain.Entities;
 using Domain.Shared;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace BookMarket.Tests.IntegrationTests;
@@ -12,10 +15,24 @@ namespace BookMarket.Tests.IntegrationTests;
 public class BooksApiTests : IDisposable
 {
     private readonly WebApplicationFactory<Program> _factory;
+    private Guid _existingAuthorId;
 
     public BooksApiTests()
     {
         _factory = Util.BuildTestServer(_ => { });
+        CreateAuthor();
+    }
+
+    private void CreateAuthor()
+    {
+        var authorsRepo = _factory.Services.GetRequiredService<IAuthorRepository>();
+        var unitOfWork = _factory.Services.GetRequiredService<IUnitOfWork>();
+        var author = new AuthorDto { Name = "Some author" };
+        Task.Run(async () =>
+        {
+            _existingAuthorId = await authorsRepo.Insert(author);
+            unitOfWork.Commit();
+        }).GetAwaiter().GetResult();
     }
 
     [Fact]
@@ -31,6 +48,48 @@ public class BooksApiTests : IDisposable
         Assert.NotNull(result.Data);
         Assert.NotNull(result.Data.Message);
         Assert.NotNull(result.Data.TraceId);
+    }
+
+    [Fact]
+    public async Task DeleteBook_BookNotExists_ReturnsError()
+    {
+        var bookId = Guid.NewGuid();
+        var req = ApiRequestBuilder.Book.Delete(bookId);
+        var resp = await _factory.SendRequestAsync(req);
+        Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode);
+
+        var result = await resp.DeserializeAsync<Result<Error>>();
+        Assert.True(result.IsError);
+        Assert.NotNull(result.Data);
+        Assert.NotNull(result.Data.Message);
+        Assert.NotNull(result.Data.TraceId);
+    }
+
+    [Fact]
+    public async Task CreateDeleteGetBook_CreateBookDeleteBookGetBook_BookDeleted()
+    {
+        var c = new CreateBookRequest(
+            "title",
+            "desc",
+            DateTime.Today,
+            321,
+            "en",
+            _existingAuthorId);
+        var createReq = ApiRequestBuilder.Book.Create(c);
+        var createRes = await _factory.SendRequestAsync(createReq);
+        Assert.Equal(HttpStatusCode.OK, createRes.StatusCode);
+        var bookId = (await createRes.DeserializeAsync<Result<Guid>>()).Data; 
+        
+        var req = ApiRequestBuilder.Book.Delete(bookId);
+        var resp = await _factory.SendRequestAsync(req);
+        Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+
+        var deleteResult = await resp.DeserializeAsync<Result>();
+        Assert.False(deleteResult.IsError);
+
+        var getReq = ApiRequestBuilder.Book.Get(bookId);
+        var getResp = await _factory.SendRequestAsync(getReq);
+        Assert.Equal(HttpStatusCode.BadRequest, getResp.StatusCode);
     }
     
     [Theory]
@@ -59,7 +118,6 @@ public class BooksApiTests : IDisposable
         var resp = await _factory.SendRequestAsync(req);
         Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode);
 
-        var str = await resp.Content.ReadAsStringAsync();
         var result = await resp.DeserializeAsync<Result<ErrorDetailed<Dictionary<string, string[]>>>>();
         Assert.NotNull(result);
         Assert.True(result.IsError);
@@ -79,7 +137,7 @@ public class BooksApiTests : IDisposable
             DateTime.Today,
             321,
             "en",
-            Guid.NewGuid());
+            _existingAuthorId);
         var createReq = ApiRequestBuilder.Book.Create(c);
         var createRes = await _factory.SendRequestAsync(createReq);
         Assert.Equal(HttpStatusCode.OK, createRes.StatusCode);
@@ -90,7 +148,7 @@ public class BooksApiTests : IDisposable
         var getReq = ApiRequestBuilder.Book.Get(createdBookId);
         var getResp = await _factory.SendRequestAsync(getReq);
         Assert.Equal(HttpStatusCode.OK, getResp.StatusCode);
-        var b = await getResp.DeserializeAsync<BookResponse>();
+        var b = await getResp.DeserializeAsync<Book>();
         Assert.Equal(c.Title, b.Title);
         Assert.Equal(c.Description, b.Description);
         Assert.Equal(c.PublishDate, b.PublishDate);
@@ -108,7 +166,7 @@ public class BooksApiTests : IDisposable
             DateTime.Today,
             321,
             "en",
-            Guid.NewGuid());
+            _existingAuthorId);
         var createReq = ApiRequestBuilder.Book.Create(c);
         var createRes = await _factory.SendRequestAsync(createReq);
         Assert.Equal(HttpStatusCode.OK, createRes.StatusCode);
