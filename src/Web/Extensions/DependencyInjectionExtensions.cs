@@ -3,7 +3,7 @@ using Application.Behaviors;
 using Domain.Abstractions;
 using FluentValidation;
 using Infrastructure;
-using Infrastructure.Repositories;
+using Infrastructure.Services.Repositories;
 using Mapster;
 using MediatR;
 using Microsoft.OpenApi.Models;
@@ -61,6 +61,7 @@ public static class DependencyInjectionExtensions
             src.GetRequiredService<IDbConnectionFactory>().GetConnection());
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBookRepository, BookRepository>();
+        services.AddScoped<IAuthorRepository, AuthorRepository>();
     }
 
     public static void ConfigureLogger(this ILoggingBuilder builder)
