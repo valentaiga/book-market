@@ -12,7 +12,7 @@ public class CreateTables : Migration
             .WithColumn("id").AsGuid().PrimaryKey().WithDefault(SystemMethods.NewGuid)
             .WithColumn("title").AsString(60).NotNullable()
             .WithColumn("description").AsString(512).NotNullable()
-            .WithColumn("publish_date").AsDate().Nullable()
+            .WithColumn("publish_date").AsDate().NotNullable()
             .WithColumn("pages_count").AsInt16().NotNullable()
             .WithColumn("author_id").AsGuid().NotNullable()
             .WithColumn("language").AsString(20).NotNullable();

@@ -1,7 +1,7 @@
 using Application.Abstractions;
 using FluentValidation;
 using MediatR;
-using ValidationException = Application.Exceptions.ValidationException;
+using ValidationException = Domain.Exceptions.Architecture.ValidationException;
 
 namespace Application.Behaviors;
 
@@ -10,7 +10,8 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
 {
     private readonly IEnumerable<IValidator<TRequest>> _validators;
     
-    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators) => _validators = validators;
+    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
+        => _validators = validators;
 
     public async Task<TResponse> Handle(
         TRequest request,
@@ -37,7 +38,7 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
             .ToDictionary(x => x.Key, x => x.Values);
 
         if (errorsDictionary.Any())
-            throw new ValidationException(errorsDictionary);
+            throw new ValidationException("Validation failed", errorsDictionary);
 
         return await next();
     }

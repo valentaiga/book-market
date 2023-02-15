@@ -7,6 +7,6 @@ public sealed record CreateBookCommand(
     string Title,
     string Description,
     DateTime PublishDate,
-    int PagesCount,
+    short PagesCount,
     string Language,
     Guid AuthorId) : ICommand<Result<Guid>>;

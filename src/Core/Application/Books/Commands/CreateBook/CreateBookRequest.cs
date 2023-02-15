@@ -4,6 +4,6 @@ public record CreateBookRequest(
     string Title,
     string Description,
     DateTime PublishDate,
-    int PagesCount,
+    short PagesCount,
     string Language,
     Guid AuthorId);

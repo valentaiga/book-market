@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Application.Exceptions;
+using Domain.Exceptions.Architecture;
 using Domain.Exceptions.Base;
 using Domain.Shared;
 using static Domain.Shared.Result;

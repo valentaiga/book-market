@@ -1,19 +1,19 @@
 # Book e-shop
-Goal: **Learn new development practices**  
-Purpose: Develop a WebAPI book e-shop
+Purpose: **Learn new development practices**  
+Goal: Develop a WebAPI book e-shop
 ## Stack:
 - [x] **.NET WebAPI**
 - [x] **Postgres**
-- [ ] **xUnit**
+- [x] **xUnit**
   - [x] Integration
   - [x] Unit
 - [x] **Clean architecture**
-  - [x] SQRS
+  - [x] CQRS
   - [x] MediatR
   - [x] Layers
 - [x] **Dapper**
 - [x] **FluentMigration**
-- [ ] **FluentValidation**
+- [x] **FluentValidation**
 - [ ] **k8s deploy**
 - [x] **Swagger**
 - [x] **Serilog**
@@ -33,4 +33,4 @@ Purpose: Develop a WebAPI book e-shop
 - Build `Migrator` project
 - Run migrator up (args: `-up`)
 - Run Web project
-- Swagger is on `/swagger` endpoint
+- Api spec is on `/swagger` endpoint
