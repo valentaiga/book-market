@@ -5,9 +5,8 @@ Purpose: Develop a WebAPI book e-shop
 - [x] **.NET WebAPI**
 - [x] **Postgres**
 - [ ] **xUnit**
-  - [ ] Module
-  - [ ] Integration
-  - [ ] Unit
+  - [x] Integration
+  - [x] Unit
 - [x] **Clean architecture**
   - [x] SQRS
   - [x] MediatR
