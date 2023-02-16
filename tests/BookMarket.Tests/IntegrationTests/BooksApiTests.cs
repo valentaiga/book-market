@@ -69,7 +69,7 @@ public class BooksApiTests : IDisposable
     public async Task CreateBook_AuthorNotExists_ReturnsError()
     {
         var c = new CreateBookRequest(
-            "title",
+            Guid.NewGuid().ToString(),
             "desc",
             DateTime.Today,
             321,
@@ -79,15 +79,53 @@ public class BooksApiTests : IDisposable
         var resp = await _factory.SendRequestAsync(req);
         Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode);
 
-        var deleteResult = await resp.DeserializeAsync<Result>();
+        var deleteResult = await resp.DeserializeAsync<Result<Error>>();
         Assert.True(deleteResult.IsError);
+        Assert.NotNull(deleteResult.Data);
+        Assert.NotNull(deleteResult.Data.Message);
+        Assert.NotNull(deleteResult.Data.TraceId);
+    }
+
+    [Fact]
+    public async Task CreateBook_BookAlreadyExists_ReturnsError()
+    {
+        var title = Guid.NewGuid().ToString();
+        var c = new CreateBookRequest(
+            title,
+            "desc 1",
+            DateTime.Today,
+            321,
+            "en",
+            _existingAuthorId);
+        
+        var c2 = new CreateBookRequest(
+            title,
+            "desc 2",
+            DateTime.Today,
+            321,
+            "en",
+            _existingAuthorId);
+        
+        var req = ApiRequestBuilder.Book.Create(c);
+        var resp = await _factory.SendRequestAsync(req);
+        Assert.Equal(HttpStatusCode.OK, resp.StatusCode);
+        
+        var req2 =  ApiRequestBuilder.Book.Create(c2);
+        var resp2 = await _factory.SendRequestAsync(req2);
+        Assert.Equal(HttpStatusCode.BadRequest, resp2.StatusCode);
+
+        var result = await resp2.DeserializeAsync<Result<Error>>();
+        Assert.True(result.IsError);
+        Assert.NotNull(result.Data);
+        Assert.NotNull(result.Data.Message);
+        Assert.NotNull(result.Data.TraceId);
     }
 
     [Fact]
     public async Task CreateDeleteGetBook_CreateBookDeleteBookGetBook_BookDeleted()
     {
         var c = new CreateBookRequest(
-            "title",
+            Guid.NewGuid().ToString(),
             "desc",
             DateTime.Today,
             321,
@@ -113,13 +151,13 @@ public class BooksApiTests : IDisposable
     [Theory]
     [InlineData(null, "desc", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.TitleInvalid)]
     [InlineData(Util.SymbolsCount61, "desc", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.TitleInvalid)]
-    [InlineData("title", "", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.DescriptionInvalid)]
-    [InlineData("title", Util.SymbolsCount513, "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.DescriptionInvalid)]
-    [InlineData("title", "desc", "0001-01-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.PublishDateInvalid)]
-    [InlineData("title", "desc", "2022-02-01", 0, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.PagesCountInvalid)]
-    [InlineData("title", "desc", "2022-02-01", 321, "", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.LanguageInvalid)]
-    [InlineData("title", "desc", "2022-02-01", 321, Util.SymbolsCount21, "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.LanguageInvalid)]
-    [InlineData("title", "desc", "2022-02-01", 321, "en", "00000000-0000-0000-0000-000000000000", BookValidationErrors.AuthorIdInvalid)]
+    [InlineData("title desc", "", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.DescriptionInvalid)]
+    [InlineData("title desc", Util.SymbolsCount513, "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.DescriptionInvalid)]
+    [InlineData("title publish", "desc", "0001-01-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.PublishDateInvalid)]
+    [InlineData("title pages", "desc", "2022-02-01", 0, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.PagesCountInvalid)]
+    [InlineData("title lang", "desc", "2022-02-01", 321, "", "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.LanguageInvalid)]
+    [InlineData("title lang", "desc", "2022-02-01", 321, Util.SymbolsCount21, "3fa85f64-5717-4562-b3fc-2c963f66afa6", BookValidationErrors.LanguageInvalid)]
+    [InlineData("title author", "desc", "2022-02-01", 321, "en", "00000000-0000-0000-0000-000000000000", BookValidationErrors.AuthorIdInvalid)]
     public async Task CreateBook_ValidationFailure_ReturnsErrorCode(string title, string description, string pDate, short pages, string lang, string author, string validationError)
     {
         DateTime.TryParse(pDate, out var publishDate);
@@ -150,7 +188,7 @@ public class BooksApiTests : IDisposable
     public async Task CreateGetBook_CreateBookGetBook_ReturnsSameBook()
     {
         var c = new CreateBookRequest(
-            "title",
+            Guid.NewGuid().ToString(),
             "desc",
             DateTime.Today,
             321,
@@ -180,7 +218,7 @@ public class BooksApiTests : IDisposable
     public async Task CreateGetAllBooks_CreateBookGetAllBooks_ReturnsSameBook()
     {
         var c = new CreateBookRequest(
-            "title",
+            Guid.NewGuid().ToString(),
             "desc",
             DateTime.Today,
             321,

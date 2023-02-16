@@ -54,7 +54,7 @@ public class DatabaseExceptionsTests : IDisposable
         var getAllQ = new GetAllBooksQuery();
         var deleteC = new DeleteBookCommand(_someId);
         var createC = new CreateBookCommand(
-            "DatabaseNotAvailableTitle",
+            Guid.NewGuid().ToString(),
             "desc",
             DateTime.Today,
             12,

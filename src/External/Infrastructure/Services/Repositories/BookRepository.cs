@@ -109,7 +109,7 @@ RETURNING id;";
 
     public async Task<bool> ExistsByTitleAndAuthor(string title, Guid authorId, CancellationToken ct)
     {
-        var query = @"SELECT EXISTS(SELECT * FROM books WHERE title = @Title AND authorId = @AuthorId)";
+        var query = @"SELECT EXISTS(SELECT * FROM books WHERE title = @Title AND author_id = @AuthorId)";
         try
         {
             var command = new CommandDefinition(query, new { title, authorId }, cancellationToken: ct);

@@ -3,7 +3,8 @@ Purpose: **Learn new development practices**
 Goal: Develop a WebAPI book e-shop
 ## Stack:
 - [x] **.NET WebAPI**
-- [x] **Postgres**
+- [x] **Postgres+Dapper**
+- [ ] **Distributed cache+Redis**
 - [x] **xUnit**
   - [x] Integration
   - [x] Unit
@@ -11,7 +12,6 @@ Goal: Develop a WebAPI book e-shop
   - [x] CQRS
   - [x] MediatR
   - [x] Layers
-- [x] **Dapper**
 - [x] **FluentMigration**
 - [x] **FluentValidation**
 - [ ] **k8s deploy**

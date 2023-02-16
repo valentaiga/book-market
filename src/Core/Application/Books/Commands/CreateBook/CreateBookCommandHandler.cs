@@ -31,7 +31,11 @@ internal sealed class CreateBookCommandHandler : ICommandHandler<CreateBookComma
         var author = await _authorRepository.GetById(request.AuthorId, ct);
         if (author is null)
             throw new AuthorNotFoundException(request.AuthorId);
-        
+
+        var alreadyExists = await _bookRepository.ExistsByTitleAndAuthor(request.Title, request.AuthorId, ct);
+        if (alreadyExists)
+            throw new BookDuplicateException(request.Title);
+
         var book = _mapper.Map<CreateBookCommand, BookDto>(request);
 
         var bookId = await _bookRepository.Insert(book);
