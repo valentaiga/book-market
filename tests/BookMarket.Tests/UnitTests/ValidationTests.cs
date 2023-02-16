@@ -1,3 +1,4 @@
+using Application.Authors.Commands.CreateAuthor;
 using Application.Books.Commands.CreateBook;
 using Xunit;
 using FluentValidation.TestHelper;
@@ -6,11 +7,6 @@ namespace BookMarket.Tests.UnitTests;
 
 public class ValidationTests
 {
-    public ValidationTests()
-    {
-        
-    }
-    
     [Theory]
     [InlineData("title", "desc", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", true)]
     [InlineData(null, "desc", "2022-02-01", 321, "en", "3fa85f64-5717-4562-b3fc-2c963f66afa6", false)]
@@ -36,6 +32,20 @@ public class ValidationTests
             authorId);
 
         var validator = new CreateBookCommandValidator();
+
+        var result = validator.TestValidate(r);
+        Assert.Equal(expectedResult, result.IsValid);
+    }
+
+    [Theory]
+    [InlineData("name", true)]
+    [InlineData("", false)]
+    [InlineData(Util.SymbolsCount61, false)]
+    public void CreateAuthorCommand(string name, bool expectedResult)
+    {
+        var r = new CreateAuthorCommand(name);
+
+        var validator = new CreateAuthorCommandValidator();
 
         var result = validator.TestValidate(r);
         Assert.Equal(expectedResult, result.IsValid);

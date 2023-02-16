@@ -1,4 +1,8 @@
 using System.Data;
+using Application.Authors.Commands.CreateAuthor;
+using Application.Authors.Commands.DeleteAuthor;
+using Application.Authors.Queries.GetAllAuthors;
+using Application.Authors.Queries.GetAuthorById;
 using Application.Books.Commands.CreateBook;
 using Application.Books.Commands.DeleteBook;
 using Application.Books.Queries.GetAllBooks;
@@ -12,19 +16,18 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
-using Npgsql;
 using Xunit;
 
 namespace BookMarket.Tests.UnitTests;
 
-public class BooksExceptionsTests : IDisposable
+public class DatabaseExceptionsTests : IDisposable
 {
     private readonly Guid _someId = Guid.NewGuid();
 
     private readonly WebApplicationFactory<Program> _factory;
     private readonly IMediator _mediator;
     
-    public BooksExceptionsTests()
+    public DatabaseExceptionsTests()
     {
         _factory = Util.BuildTestServer(services =>
         {
@@ -45,37 +48,37 @@ public class BooksExceptionsTests : IDisposable
     }
 
     [Fact]
-    public async Task GetBookById_DatabaseNotAvailable_DatabaseException()
+    public async Task BooksRepository_DatabaseExceptions()
     {
-        var query = new GetBookByIdQuery(_someId);
-        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(query));
-    }
-
-    [Fact]
-    public async Task GetAllBooks_DatabaseNotAvailable_DatabaseException()
-    {
-        var query = new GetAllBooksQuery();
-        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(query));
-    }
-
-    [Fact]
-    public async Task DeleteBook_DatabaseNotAvailable_DatabaseException()
-    {
-        var query = new DeleteBookCommand(_someId);
-        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(query));
-    }
-
-    [Fact]
-    public async Task InsertBook_DatabaseNotAvailable_DatabaseException()
-    {
-        var query = new CreateBookCommand(
+        var getQ = new GetBookByIdQuery(_someId);
+        var getAllQ = new GetAllBooksQuery();
+        var deleteQ = new DeleteBookCommand(_someId);
+        var createQ = new CreateBookCommand(
             "DatabaseNotAvailableTitle",
             "desc",
             DateTime.Today,
             12,
             "en",
             _someId);
-        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(query));
+        
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(getQ));
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(getAllQ));
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(createQ));
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(deleteQ));
+    }
+
+    [Fact]
+    public async Task AuthorsRepository_DatabaseExceptions()
+    {
+        var getQ = new GetAuthorByIdQuery(_someId);
+        var getAllQ = new GetAllAuthorsQuery();
+        var deleteQ = new DeleteAuthorCommand(_someId);
+        var createQ = new CreateAuthorCommand("name");
+        
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(getQ));
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(getAllQ));
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(createQ));
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(deleteQ));
     }
 
     public void Dispose()

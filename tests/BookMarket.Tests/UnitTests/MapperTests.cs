@@ -1,4 +1,6 @@
 using Application.Abstractions;
+using Application.Authors.Commands.CreateAuthor;
+using Application.Authors.Responses;
 using Application.Books.Commands.CreateBook;
 using Application.Books.Responses;
 using Domain.Entities;
@@ -60,7 +62,7 @@ public class MapperTests : IDisposable
     }
 
     [Fact]
-    public void BookEntity_To_GetBookResponse()
+    public void BookEntity_To_BookResponse()
     {
         var b = new BookDto
         {
@@ -81,6 +83,35 @@ public class MapperTests : IDisposable
         Assert.Equal(b.PagesCount, r.PagesCount);
         Assert.Equal(b.Language, r.Language);
         Assert.Equal(b.AuthorId, r.AuthorId);
+    }
+
+    [Fact]
+    public void CreateAuthorRequest_To_CreateAuthorCommand()
+    {
+        var r = new CreateAuthorRequest("name");
+        var c = _mapper.Map<CreateAuthorRequest, CreateAuthorCommand>(r);
+        Assert.Equal(r.Name, c.Name);
+    }
+
+    [Fact]
+    public void CreateAuthorCommand_To_AuthorEntity()
+    {
+        var c = new CreateAuthorCommand("name");
+        var e = _mapper.Map<CreateAuthorCommand, AuthorDto>(c);
+        Assert.Equal(c.Name, e.Name);
+    }
+
+    [Fact]
+    public void AuthorEntity_To_AuthorResponse()
+    {
+        var e = new AuthorDto
+        {
+            Id = Guid.NewGuid(),
+            Name = "name"
+        };
+        var r = _mapper.Map<AuthorDto, Author>(e);
+        Assert.Equal(e.Name, r.Name);
+        Assert.Equal(e.Id, r.Id);
     }
 
     public void Dispose()

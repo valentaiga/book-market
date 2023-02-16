@@ -34,7 +34,7 @@ public class AuthorRepository : IAuthorRepository
         }
     }
 
-    public async Task<AuthorDto> GetById(Guid authorId, CancellationToken ct)
+    public async Task<AuthorDto?> GetById(Guid authorId, CancellationToken ct)
     {
         const string query = @"SELECT * FROM authors WHERE id = @AuthorId LIMIT 1";
         
@@ -74,7 +74,6 @@ RETURNING id;";
         {
             var command = new CommandDefinition(query, new { authorId }, transaction: _unitOfWork.Transaction);
             var result = await _dbConnection.ExecuteAsync(command);
-            _unitOfWork.Commit();
             return result == 1;
         }
         catch (DbException ex)

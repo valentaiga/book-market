@@ -66,6 +66,24 @@ public class BooksApiTests : IDisposable
     }
 
     [Fact]
+    public async Task CreateBook_AuthorNotExists_ReturnsError()
+    {
+        var c = new CreateBookRequest(
+            "title",
+            "desc",
+            DateTime.Today,
+            321,
+            "en",
+            Guid.NewGuid());
+        var req = ApiRequestBuilder.Book.Create(c);
+        var resp = await _factory.SendRequestAsync(req);
+        Assert.Equal(HttpStatusCode.BadRequest, resp.StatusCode);
+
+        var deleteResult = await resp.DeserializeAsync<Result>();
+        Assert.True(deleteResult.IsError);
+    }
+
+    [Fact]
     public async Task CreateDeleteGetBook_CreateBookDeleteBookGetBook_BookDeleted()
     {
         var c = new CreateBookRequest(

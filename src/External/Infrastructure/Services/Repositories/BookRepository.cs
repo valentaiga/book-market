@@ -18,7 +18,7 @@ public class BookRepository : IBookRepository
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<BookDto> GetById(Guid bookId, CancellationToken ct)
+    public async Task<BookDto?> GetById(Guid bookId, CancellationToken ct)
     {
         const string query = @"SELECT * FROM books WHERE ID = @BookId LIMIT 1";
         

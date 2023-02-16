@@ -17,9 +17,9 @@ public class CreateBookCommandValidator : AbstractValidator<CreateBookCommand>
         RuleFor(x => x.PagesCount)
             .NotEmpty().WithErrorCode(BookValidationErrors.PagesCountInvalid);
         RuleFor(x => x.Language)
-        .NotEmpty().WithErrorCode(BookValidationErrors.LanguageInvalid)
-        .MaximumLength(20).WithErrorCode(BookValidationErrors.LanguageInvalid);
+            .NotEmpty().WithErrorCode(BookValidationErrors.LanguageInvalid)
+            .MaximumLength(20).WithErrorCode(BookValidationErrors.LanguageInvalid);
         RuleFor(x => x.AuthorId)
-        .NotEmpty().WithErrorCode(BookValidationErrors.AuthorIdInvalid);
+            .NotEmpty().WithErrorCode(BookValidationErrors.AuthorIdInvalid);
     }
 }
