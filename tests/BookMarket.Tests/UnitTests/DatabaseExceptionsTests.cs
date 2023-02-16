@@ -52,8 +52,8 @@ public class DatabaseExceptionsTests : IDisposable
     {
         var getQ = new GetBookByIdQuery(_someId);
         var getAllQ = new GetAllBooksQuery();
-        var deleteQ = new DeleteBookCommand(_someId);
-        var createQ = new CreateBookCommand(
+        var deleteC = new DeleteBookCommand(_someId);
+        var createC = new CreateBookCommand(
             "DatabaseNotAvailableTitle",
             "desc",
             DateTime.Today,
@@ -63,8 +63,8 @@ public class DatabaseExceptionsTests : IDisposable
         
         await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(getQ));
         await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(getAllQ));
-        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(createQ));
-        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(deleteQ));
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(createC));
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(deleteC));
     }
 
     [Fact]
@@ -72,13 +72,13 @@ public class DatabaseExceptionsTests : IDisposable
     {
         var getQ = new GetAuthorByIdQuery(_someId);
         var getAllQ = new GetAllAuthorsQuery();
-        var deleteQ = new DeleteAuthorCommand(_someId);
-        var createQ = new CreateAuthorCommand("name");
+        var deleteC = new DeleteAuthorCommand(_someId);
+        var createC = new CreateAuthorCommand("name");
         
         await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(getQ));
         await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(getAllQ));
-        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(createQ));
-        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(deleteQ));
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(createC));
+        await Assert.ThrowsAsync<DatabaseException>(() => _mediator.Send(deleteC));
     }
 
     public void Dispose()

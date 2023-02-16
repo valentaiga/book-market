@@ -172,7 +172,8 @@ public class BooksApiTests : IDisposable
         Assert.Equal(c.PublishDate, b.PublishDate);
         Assert.Equal(c.PagesCount, b.PagesCount);
         Assert.Equal(c.Language, b.Language);
-        Assert.Equal(c.AuthorId, b.AuthorId);
+        Assert.Equal(c.AuthorId, b.Author.Id);
+        Assert.NotNull(b.Author.Name);
     }
 
     [Fact]
@@ -204,7 +205,6 @@ public class BooksApiTests : IDisposable
         Assert.Equal(c.PublishDate, b.PublishDate);
         Assert.Equal(c.PagesCount, b.PagesCount);
         Assert.Equal(c.Language, b.Language);
-        Assert.Equal(c.AuthorId, b.AuthorId);
     }
 
     public void Dispose()

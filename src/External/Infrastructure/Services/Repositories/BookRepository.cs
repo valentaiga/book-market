@@ -33,6 +33,22 @@ public class BookRepository : IBookRepository
         }
     }
 
+    public async Task<BookDto[]> GetByAuthor(Guid authorId, CancellationToken ct)
+    {
+        const string query = @"SELECT * FROM books WHERE author_id = @AuthorId";
+        
+        try
+        {
+            var command = new CommandDefinition(query, new { authorId }, cancellationToken: ct);
+            var result = await _dbConnection.QueryAsync<BookDto>(command);
+            return result?.ToArray() ?? Array.Empty<BookDto>();
+        }
+        catch (DbException ex)
+        {
+            throw new DatabaseException($"Get books by author:'{authorId}' failed", ex);
+        }
+    }
+
     public async Task<BookDto[]> GetAll(CancellationToken ct)
     {
         const string query = @"SELECT * FROM books";

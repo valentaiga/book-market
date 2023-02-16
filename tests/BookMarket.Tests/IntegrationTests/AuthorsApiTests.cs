@@ -2,15 +2,9 @@ using System.Net;
 using Application.Authors;
 using Application.Authors.Commands.CreateAuthor;
 using Application.Authors.Responses;
-using Application.Books;
-using Application.Books.Commands.CreateBook;
-using Application.Books.Responses;
 using BookMarket.Tests.Extensions;
-using Domain.Abstractions;
-using Domain.Entities;
 using Domain.Shared;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace BookMarket.Tests.IntegrationTests;
@@ -18,7 +12,6 @@ namespace BookMarket.Tests.IntegrationTests;
 public class AuthorsApiTests : IDisposable
 {
     private readonly WebApplicationFactory<Program> _factory;
-    private Guid _existingAuthorId;
 
     public AuthorsApiTests()
     {

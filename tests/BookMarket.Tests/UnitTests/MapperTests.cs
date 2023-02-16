@@ -82,7 +82,6 @@ public class MapperTests : IDisposable
         Assert.Equal(b.PublishDate, r.PublishDate);
         Assert.Equal(b.PagesCount, r.PagesCount);
         Assert.Equal(b.Language, r.Language);
-        Assert.Equal(b.AuthorId, r.AuthorId);
     }
 
     [Fact]

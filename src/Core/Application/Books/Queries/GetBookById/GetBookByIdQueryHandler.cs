@@ -1,4 +1,5 @@
 using Application.Abstractions;
+using Application.Authors.Responses;
 using Application.Books.Responses;
 using Domain.Abstractions;
 using Domain.Entities;
@@ -9,21 +10,31 @@ namespace Application.Books.Queries.GetBookById;
 public class GetBookByIdQueryHandler : IQueryHandler<GetBookByIdQuery, Book>
 {
     private readonly IBookRepository _bookRepository;
+    private readonly IAuthorRepository _authorRepository;
     private readonly IMapper _mapper;
 
-    public GetBookByIdQueryHandler(IBookRepository bookRepository, IMapper mapper)
+    public GetBookByIdQueryHandler(
+        IBookRepository bookRepository, 
+        IAuthorRepository authorRepository, 
+        IMapper mapper)
     {
         _bookRepository = bookRepository;
+        _authorRepository = authorRepository;
         _mapper = mapper;
     }
 
     public async Task<Book> Handle(GetBookByIdQuery request, CancellationToken ct)
     {
-        var book = await _bookRepository.GetById(request.BookId, ct);
+        var dto = await _bookRepository.GetById(request.BookId, ct);
         
-        if (book is null)
+        if (dto is null)
             throw new BookNotFoundException(request.BookId);
 
-        return _mapper.Map<BookDto, Book>(book);
+        var authorDto = await _authorRepository.GetById(dto.AuthorId, ct); 
+        
+        var book = _mapper.Map<BookDto, Book>(dto);
+        book.Author = _mapper.Map<AuthorDto, Author>(authorDto!);
+        
+        return book;
     } 
 }

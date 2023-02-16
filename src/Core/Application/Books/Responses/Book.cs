@@ -1,3 +1,5 @@
+using Application.Authors.Responses;
+
 namespace Application.Books.Responses;
 
 public sealed class Book
@@ -8,5 +10,5 @@ public sealed class Book
     public DateTime? PublishDate { get; init; }
     public int PagesCount { get; init; }
     public string? Language { get; init; }
-    public Guid AuthorId { get; init; }
+    public Author Author { get; set; }
 }
