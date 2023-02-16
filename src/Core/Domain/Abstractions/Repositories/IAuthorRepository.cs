@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Domain.Abstractions;
+namespace Domain.Abstractions.Repositories;
 
 public interface IAuthorRepository
 {

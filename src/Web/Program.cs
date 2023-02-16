@@ -7,6 +7,7 @@ builder.Logging.ConfigureLogger();
 builder.Services.ConfigureMediatR();
 builder.Services.ConfigureMapper();
 builder.Services.ConfigureDatabase();
+builder.Services.ConfigureCache();
 builder.Services.ConfigureValidation();
 builder.Services.ConfigureControllers();
 

@@ -2,6 +2,7 @@ using System.Data;
 using System.Data.Common;
 using Dapper;
 using Domain.Abstractions;
+using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Exceptions.Architecture;
 

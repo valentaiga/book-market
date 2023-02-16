@@ -4,7 +4,7 @@ Goal: Develop a WebAPI book e-shop
 ## Stack:
 - [x] **.NET WebAPI**
 - [x] **Postgres+Dapper**
-- [ ] **Distributed cache+Redis**
+- [x] **Memory cache**
 - [x] **xUnit**
   - [x] Integration
   - [x] Unit

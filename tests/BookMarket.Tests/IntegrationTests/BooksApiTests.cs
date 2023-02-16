@@ -4,6 +4,7 @@ using Application.Books.Commands.CreateBook;
 using Application.Books.Responses;
 using BookMarket.Tests.Extensions;
 using Domain.Abstractions;
+using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Shared;
 using Microsoft.AspNetCore.Mvc.Testing;

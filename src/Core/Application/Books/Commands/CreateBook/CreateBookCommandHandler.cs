@@ -1,5 +1,6 @@
 using Application.Abstractions;
 using Domain.Abstractions;
+using Domain.Abstractions.Repositories;
 using Domain.Entities;
 using Domain.Exceptions;
 using Domain.Shared;

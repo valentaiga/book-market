@@ -10,11 +10,9 @@ using Application.Books.Queries.GetBookById;
 using BookMarket.Tests.Abstractions;
 using Domain.Abstractions;
 using Domain.Exceptions.Architecture;
-using Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using Xunit;
 
@@ -40,8 +38,7 @@ public class DatabaseExceptionsTests : IDisposable
             var factoryMock = new Mock<IDbConnectionFactory>();
             factoryMock.Setup(x => x.GetConnection())
                 .Returns(conMock.Object);
-            services.RemoveAll<IDbConnectionFactory>();
-            services.RemoveAll<PgsqlConnectionFactory>();
+            
             services.AddSingleton<IDbConnectionFactory>(_ => factoryMock.Object);
         });
         _mediator = _factory.Services.GetRequiredService<IMediator>();

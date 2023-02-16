@@ -1,6 +1,6 @@
 using Application.Abstractions;
 using Application.Authors.Responses;
-using Domain.Abstractions;
+using Domain.Abstractions.Repositories;
 using Domain.Entities;
 
 namespace Application.Authors.Queries.GetAllAuthors;

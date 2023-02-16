@@ -1,8 +1,11 @@
 using System.Data;
+using Application.Abstractions.Cache;
 using Application.Behaviors;
 using Domain.Abstractions;
+using Domain.Abstractions.Repositories;
 using FluentValidation;
 using Infrastructure;
+using Infrastructure.Services.Cache;
 using Infrastructure.Services.Repositories;
 using Mapster;
 using MediatR;
@@ -62,6 +65,13 @@ public static class DependencyInjectionExtensions
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IAuthorRepository, AuthorRepository>();
+    }
+
+    public static void ConfigureCache(this IServiceCollection services)
+    {
+        services.AddMemoryCache();
+        services.AddScoped<ICacheProvider, MemoryCacheProvider>();
+        services.Decorate<IAuthorRepository, AuthorCacheDecorator>();
     }
 
     public static void ConfigureLogger(this ILoggingBuilder builder)

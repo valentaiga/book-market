@@ -1,6 +1,6 @@
 using Application.Abstractions;
 using Application.Books.Responses;
-using Domain.Abstractions;
+using Domain.Abstractions.Repositories;
 using Domain.Entities;
 
 namespace Application.Books.Queries.GetAllBooks;
